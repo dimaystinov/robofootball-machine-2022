@@ -6,6 +6,7 @@ from array import array
 from PIL import Image as I
 from PIL import ImageGrab as Ig
 import  MashineVisual as MV
+import numpy
 
 class MyBotDownControl(object):
 
@@ -53,18 +54,23 @@ class MyBotDownControl(object):
         ##errorCode, PosTg = sim.simxGetObjectPosition(clientID, Target, -1, sim.simx_opmode_streaming)
 
     def botGetImage(self):
+
         err, self.resolution, self.image = sim.simxGetVisionSensorImage(self.clientId, self.Camera, 0,sim.simx_opmode_buffer)
         image_byte_array = array('b', (self.image))
         image_byte_array = bytes(image_byte_array)
         image_buffer = I.frombuffer("RGB", (self.resolution[0], self.resolution[1]), image_byte_array, "raw", "RGB", 0, 1)
         image_buffer = image_buffer.rotate(180)
-        image_buffer = image_buffer.transpose(I.FLIP_LEFT_RIGHT)
+        image_buffer = image_buffer.transpose(I.FLIP_LEFT_RIGHT).convert('RGB')
         image_buffer.save('VidSrobotaCopelia.png')
-        return image_buffer
+
+        open_cv_image = numpy.array(image_buffer)
+        open_cv_image = open_cv_image[:, :, ::-1].copy()
+        return open_cv_image
 
     def visLoadimage(self):
         image_buffer=I.open('VidSrobotaCopelia.png')
         return(image_buffer)
+
 
     def chassisSetSpeed(self,Vx,Vy,Vz):
         ori=sim.simxGetObjectOrientation(self.clientId,self.Target,-1,sim.simx_opmode_oneshot)
@@ -76,7 +82,7 @@ class MyBotDownControl(object):
 
 
     def roboticArmMove(self,x,y):
-        pos=sim.simxGetObjectPosition(self.clientId,self.TargetMt,self.Body,sim.simx_opmode_oneshot_wait)
+        pos=sim.simxGetObjectPosition(self.clientId,self.TargetM,self.Body,sim.simx_opmode_oneshot_wait)
         xr=pos[1][1]
         yr=-pos[1][3]
         self.botSetM(xr+x,yr+y)

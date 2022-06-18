@@ -1,5 +1,6 @@
 import sim  # V-rep library
 import sys
+from MashineVisual import *
 
 
 from MyMasterBotControl import MyBotDownControl
@@ -98,4 +99,14 @@ class Control():
 
 if __name__ == '__main__':
     Co=Control(True)
-    Co.chassisSetSpeed(1,0,0)
+    Co.chassisSetSpeed(0.5,0,0)
+    #Co.roboticArmMove(0,0)
+    print(type(Co.MB.botGetImage()))
+    while True:
+        cv2.imshow('frame',Co.MB.botGetImage())
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
+        if cv2.waitKey(25) & 0xFF == ord('q'):
+            break
+
+
