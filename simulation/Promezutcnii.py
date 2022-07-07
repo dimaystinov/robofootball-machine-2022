@@ -4,6 +4,7 @@ from MashineVisual import *
 
 
 from MyMasterBotControl import MyBotDownControl
+import time
 
 
 #cv2.namedWindow("result")
@@ -94,13 +95,13 @@ class Control():
         print('returnpos')
 
 
-
-
+X = 0
+Y = 0
 
 if __name__ == '__main__':
     Co=Control(True)
-    Co.chassisSetSpeed(0.5,0,0)
-    #Co.roboticArmMove(0,0)
+    Co.chassisSetSpeed(1,1,0)#x/y/z
+
     print(type(Co.MB.botGetImage()))
     while True:
         cv2.imshow('frame',Co.MB.botGetImage())
@@ -108,5 +109,22 @@ if __name__ == '__main__':
         cv2.destroyAllWindows()
         if cv2.waitKey(25) & 0xFF == ord('q'):
             break
+
+def countdown(num_of_secs):
+    while num_of_secs:
+        m, s = divmod(num_of_secs, 60)
+        min_sec_format = '{:02d}:{:02d}'
+        print(min_sec_format, end='/r')
+        time.sleep(1)
+        num_of_secs -= 1
+
+    print('Countdown finished.')
+
+inp = input('Input number of seconds to countdown: ')
+countdown(inp)
+#time.sleep(1)
+#if timer1_is_timeout:
+   # Y =* 0;
+   # X =+ 0,5;
 
 
